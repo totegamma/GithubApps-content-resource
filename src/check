@@ -6,9 +6,9 @@ exec 1>&2 # redirect all output to stderr for logging
 echo "Hello from check program!"
 
 PAYLOAD="$(cat <&0)"
-BRANCH=$(jq -r '.branch // "main"' <<< $PAYLOAD)
-ACCOUNT=$(jq -r '.account // ""' <<< $PAYLOAD)
-REPO=$(jq -r '.repository // ""' <<< $PAYLOAD)
+BRANCH=$(jq -r '.source.branch // "main"' <<< $PAYLOAD)
+ACCOUNT=$(jq -r '.source.account // ""' <<< $PAYLOAD)
+REPO=$(jq -r '.source.repository // ""' <<< $PAYLOAD)
 PREV=$(jq -r '.version.ref // ""' <<< $PAYLOAD)
 
 TOKEN=$(bash $(dirname $0)/getToken.sh <<< $PAYLOAD)
