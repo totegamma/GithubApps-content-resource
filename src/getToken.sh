@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ex
 
 PAYLOAD="$(cat <&0)"
 
