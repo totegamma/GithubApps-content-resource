@@ -9,7 +9,7 @@ DEST=$1
 
 ACCOUNT=$(jq -r '.source.account // ""' <<< $PAYLOAD)
 REPO=$(jq -r '.source.repository // ""' <<< $PAYLOAD)
-VERSION=$(jq -r '.source.version.ref // ""' <<< $PAYLOAD)
+VERSION=$(jq -r '.version.ref // ""' <<< $PAYLOAD)
 TOKEN=$(bash $(dirname $0)/getToken.sh <<< $PAYLOAD)
 
 git clone https://x-access-token:$TOKEN@github.com/$ACCOUNT/$REPO.git $DEST
