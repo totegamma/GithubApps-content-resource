@@ -10,7 +10,7 @@ REPO=$(jq -r '.repository // ""' <<< $PAYLOAD)
 PREV=$(jq -r '.version.ref // ""' <<< $PAYLOAD)
 
 TOKEN=$(bash getToken.sh <<< PAYLOAD)
-LATEST=$(curl -i -X GET -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.github+json" https://api.github.com/repos/$ACCOUNT/$REPO/branches \
+LATEST=$(curl -s -X GET -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.github+json" https://api.github.com/repos/$ACCOUNT/$REPO/branches \
        | jq -r --arg branch $BRANCH 'map(select(.name==$branch)) | .[0].commit.sha')
 
 if [ $PREV != $LATEST ]; then
