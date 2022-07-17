@@ -1,18 +1,20 @@
 #!/bin/bash
 
-echo "Hello from in program!" >&2
-
-set -e
+set -ex
+exec 3>&1 # make stdout available as fd 3 for the result
+exec 1>&2 # redirect all output to stderr for logging
 
 PAYLOAD="$(cat <&0)"
 DEST=$1
 
-ACCOUNT=$(jq -r '.account // ""' <<< $PAYLOAD)
-REPO=$(jq -r '.repository // ""' <<< $PAYLOAD)
-VERSION=$(jq -r '.version.ref // ""' <<< PAYLOAD)
-TOKEN=$(bash getToken.sh <<< PAYLOAD)
+ACCOUNT=$(jq -r '.source.account // ""' <<< $PAYLOAD)
+REPO=$(jq -r '.source.repository // ""' <<< $PAYLOAD)
+VERSION=$(jq -r '.source.version.ref // ""' <<< PAYLOAD)
+TOKEN=$(bash $(dirname $0)/getToken.sh <<< PAYLOAD)
 
 git clone https://x-access-token:$TOKEN@github.com/$ACCOUNT/$REPO.git $DEST
 cd $DEST
 git checkout $VERSION
+
+jq -n --arg value $VERSION '{"version":{"ref": $value}, "metadata": []}' >&3
 
