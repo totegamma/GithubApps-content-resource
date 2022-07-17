@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Hello from check program!" >&2
+
 set -e
 
 PAYLOAD="$(cat <&0)"
