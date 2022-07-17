@@ -3,11 +3,11 @@ set -ex
 
 PAYLOAD="$(cat <&0)"
 
-KEYSTRING=$(jq -r '.source.private_key // ""' <<< $PAYLOAD)
 ACCOUNT=$(jq -r '.source.account // ""' <<< $PAYLOAD)
 APPID=$(jq -r '.source.appID // ""' <<< $PAYLOAD)
 
-echo $KEYSTRING > privatekey.pem
+
+jq -r '.source.private_key // ""' <<< $PAYLOAD > privatekey.pem
 JWT=$(jwt encode --secret @privatekey.pem --iss $APPID --exp +5min --alg RS256)
 rm privatekey.pem
 
