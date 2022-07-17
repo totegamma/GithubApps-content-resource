@@ -11,3 +11,7 @@ RUN wget https://github.com/mike-engel/jwt-cli/releases/download/5.0.3/jwt-linux
 
 ADD src/ /opt/resource
 
+RUN chmod u+x /opt/resource/check
+RUN chmod u+x /opt/resource/in
+RUN chmod u+x /opt/resource/out
+
