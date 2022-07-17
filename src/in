@@ -15,7 +15,12 @@ TOKEN=$(bash $(dirname $0)/getToken.sh <<< $PAYLOAD)
 git clone https://x-access-token:$TOKEN@github.com/$ACCOUNT/$REPO.git $DEST
 cd $DEST
 git checkout $VERSION
+mkdir ci
+touch ci/test
 ls
+pwd
+cd
+pwd
 
 jq -n --arg version $VERSION '{"version":{"ref": $version}, "metadata": []}' >&3
 
