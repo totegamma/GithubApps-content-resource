@@ -1,19 +1,21 @@
 #!/bin/bash
-
-echo "Hello from check program!" >&2
-
 set -e
+exec 3>&1 # make stdout available as fd 3 for the result
+exec 1>&2 # redirect all output to stderr for logging
+
+echo "Hello from check program!"
 
 PAYLOAD="$(cat <&0)"
 BRANCH=$(jq -r '.branch // "main"' <<< $PAYLOAD)
+ACCOUNT=$(jq -r '.account // ""' <<< $PAYLOAD)
 REPO=$(jq -r '.repository // ""' <<< $PAYLOAD)
 PREV=$(jq -r '.version.ref // ""' <<< $PAYLOAD)
 
-TOKEN=$(bash getToken.sh <<< PAYLOAD)
+TOKEN=$(bash getToken.sh <<< $PAYLOAD)
 LATEST=$(curl -s -X GET -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.github+json" https://api.github.com/repos/$ACCOUNT/$REPO/branches \
        | jq -r --arg branch $BRANCH 'map(select(.name==$branch)) | .[0].commit.sha')
 
-if [ $PREV != $LATEST ]; then
+if [ "$PREV" != "$LATEST" ]; then
 	jq -n --arg value $LATEST '[{"ref": $value}]'
 else
 	jq -n '[]'
