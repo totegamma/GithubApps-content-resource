@@ -14,8 +14,8 @@ LATEST=$(curl -s -X GET -H "Authorization: Bearer $TOKEN" -H "Accept: applicatio
        | jq -r --arg branch $BRANCH 'map(select(.name==$branch)) | .[0].commit.sha')
 
 if [ "$PREV" != "$LATEST" ]; then
-	jq -n --arg value $LATEST '[{"ref": $value}]'
+	jq -n --arg value $LATEST '[{"ref": $value}]' >&3
 else
-	jq -n '[]'
+	jq -n '[]' >&3
 fi
 
