@@ -1,6 +1,6 @@
-# GithubApps Content Resource
+# Concourse GithubApps Content Resource
 
-Clone Github private repository without personal credential.
+A [Concourse](https://concourse-ci.org/) resource for Clone Github private repository without personal credential.
 
 ## Limitation
 This is WIP project, so there are many limitation. Feel free to implement and PR <3
@@ -14,7 +14,7 @@ App must have 'content' read access priviledge.
 
 ## Config
 - `appID`: *Reqrueid.* GithubApp App ID
-- `private\_key`: *Required.* GithubApp private key
+- `private_key`: *Required.* GithubApp private key
 - `account`: *Required.* Github username or organization name which has target repository
 - `repository`: *Required.* repository name which you want to pull
 - `branch`: *Optional.* target branch name (default: main)
