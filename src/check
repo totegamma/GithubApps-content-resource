@@ -31,7 +31,7 @@ if [ -z "$TOKEN" ]; then
 fi
 
 LATEST=$(curl -s -X GET -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.github+json" https://api.github.com/repos/$ACCOUNT/$REPO/branches \
-       | jq -r --arg branch $BRANCH 'map(select(.name==$branch)) | .[0].commit.sha')
+       | jq -r --arg branch $BRANCH 'map(select(.name==$branch)) | .[0].commit.sha // ""')
 
 if [ -z "$LATEST" ]; then
 	echo "failed to get latest commit. Is your account/repository is valid and branch exists?"

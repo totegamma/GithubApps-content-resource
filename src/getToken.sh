@@ -16,7 +16,7 @@ if [ -z "$APPID" ]; then
 fi
 
 jq -r '.source.private_key // ""' <<< $PAYLOAD > privatekey.pem
-JWT=$(jwt encode --secret @privatekey.pem --iss $APPID --exp +5min --alg RS256)
+JWT=$(jwt encode --secret @privatekey.pem --iss $APPID --exp +3min --alg RS256)
 rm privatekey.pem
 
 if [ -z "$JWT" ]; then
