@@ -8,9 +8,24 @@ PAYLOAD="$(cat <&0)"
 DEST=$1
 
 ACCOUNT=$(jq -r '.source.account // ""' <<< $PAYLOAD)
+if [ -z "$ACCOUNT" ]; then
+	echo "source parameter 'account' missing."
+	exit 1
+fi
+
 REPO=$(jq -r '.source.repository // ""' <<< $PAYLOAD)
+if [ -z "$REPO" ]; then
+	echo "source parameter 'repo' missing."
+	exit 1
+fi
+
 VERSION=$(jq -r '.version.ref // ""' <<< $PAYLOAD)
+
 TOKEN=$(bash $(dirname $0)/getToken.sh <<< $PAYLOAD)
+if [ -z "$TOKEN" ]; then
+	echo "failed to get TOKEN (please see above errors.)"
+	exit 1
+fi
 
 git clone https://x-access-token:$TOKEN@github.com/$ACCOUNT/$REPO.git $DEST
 cd $DEST

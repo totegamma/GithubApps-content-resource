@@ -5,13 +5,38 @@ exec 1>&2 # redirect all output to stderr for logging
 
 PAYLOAD="$(cat <&0)"
 BRANCH=$(jq -r '.source.branch // "main"' <<< $PAYLOAD)
+if [ -z "$BRANCH" ]; then
+	echo "source parameter 'branch' missing."
+	exit 1
+fi
+
 ACCOUNT=$(jq -r '.source.account // ""' <<< $PAYLOAD)
+if [ -z "$ACCOUNT" ]; then
+	echo "source parameter 'account' missing."
+	exit 1
+fi
+
 REPO=$(jq -r '.source.repository // ""' <<< $PAYLOAD)
+if [ -z "$REPO" ]; then
+	echo "source parameter 'repository' missing."
+	exit 1
+fi
+
 PREV=$(jq -r '.version.ref // ""' <<< $PAYLOAD)
 
 TOKEN=$(bash $(dirname $0)/getToken.sh <<< $PAYLOAD)
+if [ -z "$TOKEN" ]; then
+	echo "failed to get TOKEN (please see above errors.)"
+	exit 1
+fi
+
 LATEST=$(curl -s -X GET -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.github+json" https://api.github.com/repos/$ACCOUNT/$REPO/branches \
        | jq -r --arg branch $BRANCH 'map(select(.name==$branch)) | .[0].commit.sha')
+
+if [ -z "$LATEST" ]; then
+	echo "failed to get latest commit. Is your account/repository is valid and branch exists?"
+	exit 1
+fi
 
 if [ "$PREV" != "$LATEST" ]; then
 	jq -n --arg value $LATEST '[{"ref": $value}]' >&3

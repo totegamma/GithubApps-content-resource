@@ -2,12 +2,6 @@
 
 A [Concourse](https://concourse-ci.org/) resource for Clone Github private repository without personal credential.
 
-## Limitation
-This is WIP project, so there are many limitation. Feel free to implement and PR <3
-
-- Currently you can just clone. No push.
-- Only latest commit change detected. If there are many commit between concourse's resource check, only latest one will proceed.
-
 ## Preparation
 You need Github App and install to your organization or repository.
 App must have 'content' read access priviledge.
@@ -66,4 +60,17 @@ jobs:
               - |
                 ls ci
 ```
+
+## Behaviour
+
+### `check`: Check for latest commit is updated.
+If the HEAD of the branch is updated, return the latest commit sha.
+Otherwise return empty.
+
+note: This means only latest commit change will detected. If there are many commit between concourse's resource check, only latest one will proceed.
+
+### `in`: Clone the repository, at the given ref.
+Clones the repository to the destination, and locks it down to a given ref. It will return the same given ref as version.
+
+### `out`: Not supported.
 
