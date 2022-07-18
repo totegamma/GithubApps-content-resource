@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -x
 
 PAYLOAD="$(cat <&0)"
 
@@ -15,7 +15,7 @@ if [ -z "$APPID" ]; then
 	exit 1
 fi
 
-jq -r '.source.private_key // ""' <<< $PAYLOAD > privatekey.pem
+jq -r '.source.private_key // ""' <<< $PAYLOAD | tr -d '\n' > privatekey.pem
 JWT=$(jwt encode --secret @privatekey.pem --iss $APPID --exp +3min --alg RS256)
 rm privatekey.pem
 
